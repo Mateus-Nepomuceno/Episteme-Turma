@@ -1,0 +1,26 @@
+from pydantic import Field
+from pydantic_settings import BaseSettings, SettingsConfigDict
+
+
+class Settings(BaseSettings):
+    model_config = SettingsConfigDict(
+        env_file='.env', env_file_encoding='utf-8'
+    )
+
+    DATABASE_URL: str = Field(init=False)
+    DATABASE_SCHEMA: str = ''
+    SECRET_KEY: str = Field(init=False)
+    ALGORITHM: str = Field(init=False)
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = Field(init=False)
+    ACADEMICO_API_URL: str | None = None
+    CORS_ORIGINS: str = 'http://localhost:5173'
+    DIRETORIO_ARMAZENAMENTO: str = 'armazenamento'
+    IDENTIDADE_API_URL: str = 'http://localhost:8000'
+
+    @property
+    def origens_cors(self) -> list[str]:
+        return [
+            origem.strip()
+            for origem in self.CORS_ORIGINS.split(',')
+            if origem.strip()
+        ]

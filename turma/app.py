@@ -1,0 +1,52 @@
+from http import HTTPStatus
+
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+
+from turma.routers import (
+    alunos,
+    atividades,
+    avaliacoes,
+    avisos,
+    desempenho,
+    encerramento,
+    frequencia,
+    horarios,
+    materiais,
+    modulos,
+    professores,
+    trancamento,
+    turmas,
+)
+from turma.schemas import Mensagem
+from turma.settings import Settings
+
+settings = Settings()
+
+app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=settings.origens_cors,
+    allow_methods=['*'],
+    allow_headers=['*'],
+)
+
+app.include_router(alunos.router)
+app.include_router(professores.router)
+app.include_router(turmas.router)
+app.include_router(horarios.router)
+app.include_router(modulos.router)
+app.include_router(materiais.router)
+app.include_router(trancamento.router)
+app.include_router(atividades.router)
+app.include_router(avaliacoes.router)
+app.include_router(frequencia.router)
+app.include_router(desempenho.router)
+app.include_router(avisos.router)
+app.include_router(encerramento.router)
+
+
+@app.get('/', status_code=HTTPStatus.OK, response_model=Mensagem)
+def read_root():
+    return {'mensagem': 'OK'}
